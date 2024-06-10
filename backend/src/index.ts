@@ -4,8 +4,10 @@ import http from "http";
 import express from 'express';
 import { Server } from 'socket.io';
 import { UserManager } from "./managers/UserManger";
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 const server = http.createServer(http);
 
 const io = new Server(server, {

@@ -199,11 +199,14 @@ export const Room = ({
         }
     }, [localVideoRef])
 
-    return <div>
+    return <div className="mx-auto">
         Hi {name}
-        <video autoPlay width={400} height={400} ref={localVideoRef} />
+            
+        <video  width={400} height={400} autoPlay ref={localVideoRef} />
+
         {lobby ? "Waiting to connect you to someone" : null}
         <video autoPlay width={400} height={400} ref={remoteVideoRef} />
+
     </div>
 }
 
