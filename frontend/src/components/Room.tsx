@@ -18,6 +18,7 @@ export const Room = ({
     const [searchParams, setSearchParams] = useSearchParams();
     const [lobby, setLobby] = useState(true);
     const [count, setCount] = useState(0);
+    const [totalUsers, setTotalUsers] = useState(null);
     const [socket, setSocket] = useState<null | Socket>(null);
     const [sendingPc, setSendingPc] = useState<null | RTCPeerConnection>(null);
     const [receivingPc, setReceivingPc] = useState<null | RTCPeerConnection>(null);
@@ -162,6 +163,9 @@ export const Room = ({
         socket.on("lobby", () => {
             setLobby(true);
         })
+        socket.on("userCount", ({ currUserCount }) => {
+            setTotalUsers(currUserCount);
+        })
 
         socket.on("add-ice-candidate", ({ candidate, type }) => {
             console.log("add ice candidate from remote");
@@ -207,7 +211,9 @@ export const Room = ({
 
     return <>
         <div className="flex flex-col items-center justify-center md:gap-10 gap-4 h-full min-h-screen">
-            <h1 className="text-3xl text-center font-bold ">Live Call</h1>
+            <h1 className="text-3xl text-center font-bold ">Live Call <br />
+                <h1 className="text-lg font-normal">Total user Connected in this app {totalUsers ? totalUsers : "0"}</h1></h1>
+
             <div className="flex flex-col md:flex-row items-center justify-center gap-10">
                 <div >
                     My Screen
