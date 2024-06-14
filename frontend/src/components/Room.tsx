@@ -2,9 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Socket, io } from "socket.io-client";
 
-const URL = "http://localhost:3000";
-// const URL = "https://befitting-prickly-stealer.glitch.me/";
-
+// const URL = "http://localhost:3000";
+const URL = "https://befitting-prickly-stealer.glitch.me/";
 export const Room = ({
     name,
     localAudioTrack,
