@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Socket, io } from "socket.io-client";
 
-// const URL = "http://localhost:3000";
-const URL = "https://befitting-prickly-stealer.glitch.me/";
+const URL = "http://localhost:3000";
+// const URL = "https://befitting-prickly-stealer.glitch.me/";
 
 export const Room = ({
     name,
@@ -206,17 +206,17 @@ export const Room = ({
     }
 
     return <>
-        <div className="flex flex-col items-center justify-center gap-10 h-full min-h-screen">
+        <div className="flex flex-col items-center justify-center md:gap-10 gap-4 h-full min-h-screen">
             <h1 className="text-3xl text-center font-bold ">Live Call</h1>
             <div className="flex flex-col md:flex-row items-center justify-center gap-10">
                 <div >
                     My Screen
-                    <video width={400} height={400} autoPlay ref={localVideoRef} />
+                    <video autoPlay className="w-full h-[200px] md:h-1/2" ref={localVideoRef} />
                 </div>
                 <div>
                     Other's Screen
                     {lobby ? "Waiting to connect you to someone" : null}
-                    <video autoPlay width={400} height={400} ref={remoteVideoRef} />
+                    <video className="w-full h-[200px] md:h-1/2" autoPlay ref={remoteVideoRef} />
                 </div>
 
             </div>
