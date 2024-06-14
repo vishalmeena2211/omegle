@@ -35,16 +35,23 @@ export const Landing = () => {
     }, [videoRef]);
 
     if (!joined) {
-            
-    return <div>
-            <video autoPlay ref={videoRef}></video>
-            <input type="text" onChange={(e) => {
-                setName(e.target.value);
-            }}>
-            </input>
-            <button onClick={() => {
-                setJoined(true);
-            }}>Join</button>
+
+        return <div className="w-full flex justify-center items-center flex-col min-h-screen gap-12">
+            <h1 className="text-center text-3xl">Welcome to Omegle Like Clone
+                <br />
+                <p className="text-lg my-3">This is a Prectice Project and i am working on it to add more advance features</p>
+            </h1>
+
+            <video width={400} height={400} autoPlay ref={videoRef}></video>
+            <div className="flex gap-4 items-center">
+                <input placeholder="Enter Your Name" className="border border-black px-2 py-2 rounded-lg" type="text" onChange={(e) => {
+                    setName(e.target.value);
+                }}>
+                </input>
+                <button className="text-2xl font-semibold" onClick={() => {
+                    setJoined(true);
+                }}>Join</button>
+            </div>
         </div>
     }
 

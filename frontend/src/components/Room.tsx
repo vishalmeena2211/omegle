@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Socket, io } from "socket.io-client";
 
+// const URL = "http://localhost:3000";
 const URL = "https://befitting-prickly-stealer.glitch.me/";
 
 export const Room = ({
@@ -13,8 +14,10 @@ export const Room = ({
     localAudioTrack: MediaStreamTrack | null,
     localVideoTrack: MediaStreamTrack | null,
 }) => {
+    // const [switch, setSwitch] = useState(0);
     const [searchParams, setSearchParams] = useSearchParams();
     const [lobby, setLobby] = useState(true);
+    const [count, setCount] = useState(0);
     const [socket, setSocket] = useState<null | Socket>(null);
     const [sendingPc, setSendingPc] = useState<null | RTCPeerConnection>(null);
     const [receivingPc, setReceivingPc] = useState<null | RTCPeerConnection>(null);
@@ -26,11 +29,10 @@ export const Room = ({
 
     useEffect(() => {
         const socket = io(URL);
-        socket.on('send-offer', async ({roomId}) => {
+        socket.on('send-offer', async ({ roomId }) => {
             console.log("sending offer");
             setLobby(false);
             const pc = new RTCPeerConnection();
-
             setSendingPc(pc);
             if (localVideoTrack) {
                 console.error("added tack");
@@ -46,11 +48,11 @@ export const Room = ({
             pc.onicecandidate = async (e) => {
                 console.log("receiving ice candidate locally");
                 if (e.candidate) {
-                   socket.emit("add-ice-candidate", {
-                    candidate: e.candidate,
-                    type: "sender",
-                    roomId
-                   })
+                    socket.emit("add-ice-candidate", {
+                        candidate: e.candidate,
+                        type: "sender",
+                        roomId
+                    })
                 }
             }
 
@@ -66,7 +68,7 @@ export const Room = ({
             }
         });
 
-        socket.on("offer", async ({roomId, sdp: remoteSdp}) => {
+        socket.on("offer", async ({ roomId, sdp: remoteSdp }) => {
             console.log("received offer");
             setLobby(false);
             const pc = new RTCPeerConnection();
@@ -106,11 +108,11 @@ export const Room = ({
                 }
                 console.log("omn ice candidate on receiving seide");
                 if (e.candidate) {
-                   socket.emit("add-ice-candidate", {
-                    candidate: e.candidate,
-                    type: "receiver",
-                    roomId
-                   })
+                    socket.emit("add-ice-candidate", {
+                        candidate: e.candidate,
+                        type: "receiver",
+                        roomId
+                    })
                 }
             }
 
@@ -148,7 +150,7 @@ export const Room = ({
             }, 5000)
         });
 
-        socket.on("answer", ({roomId, sdp: remoteSdp}) => {
+        socket.on("answer", ({ roomId, sdp: remoteSdp }) => {
             setLobby(false);
             setSendingPc(pc => {
                 pc?.setRemoteDescription(remoteSdp)
@@ -161,9 +163,9 @@ export const Room = ({
             setLobby(true);
         })
 
-        socket.on("add-ice-candidate", ({candidate, type}) => {
+        socket.on("add-ice-candidate", ({ candidate, type }) => {
             console.log("add ice candidate from remote");
-            console.log({candidate, type})
+            console.log({ candidate, type })
             if (type == "sender") {
                 setReceivingPc(pc => {
                     if (!pc) {
@@ -188,7 +190,7 @@ export const Room = ({
         })
 
         setSocket(socket)
-    }, [name])
+    }, [name, count])
 
     useEffect(() => {
         if (localVideoRef.current) {
@@ -199,14 +201,28 @@ export const Room = ({
         }
     }, [localVideoRef])
 
-    return <div className="mx-auto">
-        Hi {name}
-            
-        <video  width={400} height={400} autoPlay ref={localVideoRef} />
+    const handleCount = () => {
+        setCount((count) => count + 1);
+    }
 
-        {lobby ? "Waiting to connect you to someone" : null}
-        <video autoPlay width={400} height={400} ref={remoteVideoRef} />
+    return <>
+        <div className="flex flex-col items-center justify-center gap-10 h-full min-h-screen">
+            <h1 className="text-3xl text-center font-bold ">Live Call</h1>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-10">
+                <div >
+                    My Screen
+                    <video width={400} height={400} autoPlay ref={localVideoRef} />
+                </div>
+                <div>
+                    Other's Screen
+                    {lobby ? "Waiting to connect you to someone" : null}
+                    <video autoPlay width={400} height={400} ref={remoteVideoRef} />
+                </div>
 
-    </div>
+            </div>
+            {remoteVideoRef && <button onClick={handleCount} className="py-2 px-6 rounded-lg bg-blue-500 flex justify-center items-center text-white">Switch</button>}
+        </div>
+    </>
+
 }
 
